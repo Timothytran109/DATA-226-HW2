@@ -19,19 +19,17 @@ def extract_task(latitude, longitude):
 
 @task
 def transform_task(data, latitude, longitude):
-    df = transform_weather(
-        data,
-        latitude,
-        longitude,
-    )
+    df = transform_weather(data, latitude, longitude)
+
+    df["date"] = df["date"].dt.strftime("%Y-%m-%d")
 
     return df.to_dict(orient="records")
 
 
 @task
 def load_task(records):
-    df = pd.DataFrame(records)
 
+    df = pd.DataFrame(records)
     df["date"] = pd.to_datetime(df["date"])
 
     load_weather_data(df)
